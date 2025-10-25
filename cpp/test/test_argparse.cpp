@@ -36,6 +36,17 @@ TEST_F(SimpleArgparser, MissingParam)
   EXPECT_FALSE(argparse.parse(3, argv));
 }
 
+TEST_F(SimpleArgparser, PositionalRootCommand)
+{
+  const char* args[] = {"program", "-1", "-2", "value", "pos0", "pos1"};
+  char** argv = const_cast<char**>(args);
+  EXPECT_TRUE(argparse.parse(6, argv));
+  EXPECT_TRUE(argparse.is_set("rf1"));
+  EXPECT_TRUE(argparse.is_set("rf2"));
+  EXPECT_EQ(argparse[0], "pos0");
+  EXPECT_EQ(argparse[1], "pos1");
+}
+
 class SubCommandArgParser : public ::testing::Test
 {
 protected:
@@ -80,4 +91,17 @@ TEST_F(SubCommandArgParser, CombinedArgs)
   EXPECT_TRUE(argparse("cf1"));
   EXPECT_TRUE(argparse("cf2"));
   EXPECT_EQ(argparse["cf2"], "value");
+}
+
+TEST_F(SubCommandArgParser, Positionals)
+{
+  const char* args[] = {"program", "-1", "cmd1", "-abvalue", "pos0", "pos1"};
+  char** argv = const_cast<char**>(args);
+  EXPECT_TRUE(argparse.parse(6, argv));
+  EXPECT_TRUE(argparse("rf1"));
+  EXPECT_TRUE(argparse("cf1"));
+  EXPECT_TRUE(argparse("cf2"));
+  EXPECT_EQ(argparse["cf2"], "value");
+  EXPECT_EQ(argparse[0], "pos0");
+  EXPECT_EQ(argparse[1], "pos1");
 }

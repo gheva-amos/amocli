@@ -57,27 +57,35 @@ bool Pole::do_parse(int argc, char** argv, int& index)
     return handle_flag(flag, argc, argv, index);
   }
   std::string opt{argv[index]};
-  if (opt.size() == 2) // -a
+  if (!is_opt(opt))
   {
-    auto flag = short_to_flag_[opt[1]];
-    return handle_flag(flag, argc, argv, index);
+    positionals_.push_back(opt);
+    return true;
   }
-  for (size_t i{1}; i < opt.size(); ++i)
+  else
   {
-    auto flag = short_to_flag_[opt[i]];
-    if (flag->requires_arg())
+    if (opt.size() == 2) // -a
     {
-      if ((i + 1) == opt.size())
-      {
-        return handle_flag(flag, argc, argv, index);
-      }
-      else
-      {
-        flag->set(opt.substr(i+1));
-        return true;
-      }
+      auto flag = short_to_flag_[opt[1]];
+      return handle_flag(flag, argc, argv, index);
     }
-    flag->set();
+    for (size_t i{1}; i < opt.size(); ++i)
+    {
+      auto flag = short_to_flag_[opt[i]];
+      if (flag->requires_arg())
+      {
+        if ((i + 1) == opt.size())
+        {
+          return handle_flag(flag, argc, argv, index);
+        }
+        else
+        {
+          flag->set(opt.substr(i+1));
+          return true;
+        }
+      }
+      flag->set();
+    }
   }
   return true;
 }
@@ -118,6 +126,16 @@ bool Pole::value(const std::string& name, std::string& ret)
     return false;
   }
   ret = flags_[name].value();
+  return true;
+}
+
+bool Pole::at(size_t index, std::string& ret)
+{
+  if (index >= positionals_.size())
+  {
+    return false;
+  }
+  ret = positionals_[index];
   return true;
 }
 

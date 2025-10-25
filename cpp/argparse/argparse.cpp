@@ -15,10 +15,17 @@ bool ArgParse::parse(int argc, char** argv)
   // argv[0] = program name
   for (int i{1}; i < argc; ++i)
   {
-    if (!is_opt(argv[i]))
+    if (!is_opt(argv[i]) && subcommands_.contains(argv[i]))
     {
       command_ = &subcommands_[argv[i]];
-      return command_->do_parse(argc, argv, ++i);
+      for (int j{i+1}; j < argc; ++j)
+      {
+        if (!command_->do_parse(argc, argv, j))
+        {
+          return false;
+        }
+      }
+      return true;
     }
     if (!do_parse(argc, argv, i))
     {
@@ -59,6 +66,23 @@ std::string ArgParse::operator[](const std::string& name)
 bool ArgParse::operator()(const std::string& name)
 {
   return is_flag_set(name);
+}
+
+std::string ArgParse::operator[](size_t index)
+{
+  std::string ret;
+  if (command_ && command_->at(index, ret))
+  {
+    return ret;
+  }
+  if (!command_)
+  {
+    if (at(index, ret))
+    {
+      return ret;
+    }
+  }
+  return "";
 }
 
 } // namespace

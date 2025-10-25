@@ -17,6 +17,7 @@ public:
   bool is_flag_set(const std::string& name);
   const std::string flag_value(const std::string& name);
   std::string operator[](const std::string& name);
+  std::string operator[](size_t index);
   bool operator()(const std::string& name);
 private:
   std::unordered_map<std::string, SubCommand> subcommands_;
