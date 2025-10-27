@@ -1,0 +1,2 @@
+yum groupinstall -y "Development Tools"
+yum install -y cmake gdb python3-devel golang python3-pip nodejs zip unzip tar vim git
