@@ -6,26 +6,26 @@
 package main
 
 import (
-  "fmt"
-  "flag"
-  "strings"
-  "os/exec"
+	"flag"
+	"fmt"
+	"os/exec"
+	"strings"
 )
 
 func main() {
-  root_dir := flag.String("r", "/Volumes/Backups", "The root directory under which we will find the folder to backup")
-  year := flag.Int("y", 2025, "The year we are backing up")
-  month := flag.Int("m", 10, "The month we are backing up")
-  day := flag.Int("d", 10, "The day we are backing up")
+	root_dir := flag.String("r", "/Volumes/Backups", "The root directory under which we will find the folder to backup")
+	year := flag.Int("y", 2025, "The year we are backing up")
+	month := flag.Int("m", 10, "The month we are backing up")
+	day := flag.Int("d", 10, "The day we are backing up")
 
-  flag.Parse()
+	flag.Parse()
 
-  cmd := fmt.Sprintf("czf %d%d%d.tgz %s/%d/%d/%d", *year, *month, *day, *root_dir, *year, *month, *day)
-  cmd_array := strings.Fields(cmd)
+	cmd := fmt.Sprintf("czf %d%d%d.tgz %s/%d/%d/%d", *year, *month, *day, *root_dir, *year, *month, *day)
+	cmd_array := strings.Fields(cmd)
 
-  command := exec.Command("tar", cmd_array...)
-  if err := command.Run(); err != nil {
-    fmt.Println(err)
-    return
-  }
+	command := exec.Command("tar", cmd_array...)
+	if err := command.Run(); err != nil {
+		fmt.Println(err)
+		return
+	}
 }
