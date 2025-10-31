@@ -28,7 +28,6 @@ func main() {
 	var cfg map[string]interface{}
 	var appCfg map[string]interface{}
 	cfgPath := cfgFilePath(*config)
-	fmt.Println(cfgPath)
 	if _, err := os.Stat(cfgPath); err == nil {
 		data, err := os.ReadFile(cfgPath)
 		if err != nil {
