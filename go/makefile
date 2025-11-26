@@ -1,17 +1,20 @@
 .PHONY: all clean
 
-ALL_FILES := bu.amocli
-ALL_SRC := bu/bu.go
+ALL_FILES := bu.amocli fcomb.amocli
+ALL_SRC := bu/bu.go fcomb/fcomb.go
+
+OS := darwin
+ARCH := arm64
 
 all: ${ALL_FILES}
 
 %.amocli:
 	@echo "Building $@ from $*/$*.go"
-	@GOOS=darwin GOARCH=arm64 go build -o $@ $*/$*.go
+	@GOOS=${OS} GOARCH=${ARCH} go build -o $@ $*/$*.go
 	@echo "Done"
 
 clean:
 	rm -f *.amocli
 
 fmt:
-	@go fmt ${ALL_SRC}
+	@go fmt ./...
